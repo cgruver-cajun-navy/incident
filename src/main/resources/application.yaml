@@ -12,21 +12,20 @@ quarkus:
       "org.eclipse.yasson":
         level: ERROR
   datasource:
-    db-kind: postgresql
-    metrics:
-      enabled: true
+    db-kind: mariadb
     jdbc:
+      driver: org.mariadb.jdbc.Driver
       url: ${RDBMS_URL}
       min-size: 5
       max-size: 20
       initial-size: 5
       validation-query-sql: SELECT 1
-      enable-metrics: true
     username: ${DATASOURCE_USER}
     password: ${DATASOURCE_PWD}
   hibernate-orm:
     database:
-      generation: none
+      generation: update
+      dialect: org.hibernate.dialect.MariaDB103Dialect
   kafka:
     health:
       enabled: true

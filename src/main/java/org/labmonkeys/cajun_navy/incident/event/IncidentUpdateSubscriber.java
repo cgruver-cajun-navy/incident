@@ -1,6 +1,9 @@
 package org.labmonkeys.cajun_navy.incident.event;
 
 import java.time.OffsetDateTime;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -29,22 +32,26 @@ public class IncidentUpdateSubscriber {
 
     @Incoming("update-incident-location")
     @Acknowledgment(Acknowledgment.Strategy.MANUAL)
-    public void updateIncidentLocation(Message<IncidentDTO> message) {
-        IncidentDTO incident = service.updateIncidentLocation(message.getPayload());
-        if (incident != null) {
-            processor.onNext(incident);
-        }
-        message.ack();
+    public CompletionStage<CompletionStage<Void>> updateIncidentLocation(Message<IncidentDTO> message) {
+        return CompletableFuture.supplyAsync(() -> {
+            IncidentDTO incident = service.updateIncidentLocation(message.getPayload());
+            if (incident != null) {
+                processor.onNext(incident);
+            }
+            return message.ack();
+        });
     }
 
     @Incoming("update-incident-status")
     @Acknowledgment(Acknowledgment.Strategy.MANUAL)
-    public void updateIncidentStatus(Message<IncidentDTO> message) {
-        IncidentDTO incident = service.updateIncidentStatus(message.getPayload());
-        if (incident != null) {
-            processor.onNext(incident);
-        }
-        message.ack();
+    public CompletionStage<CompletionStage<Void>> updateIncidentStatus(Message<IncidentDTO> message) {
+        return CompletableFuture.supplyAsync(() -> {
+            IncidentDTO incident = service.updateIncidentStatus(message.getPayload());
+            if (incident != null) {
+                processor.onNext(incident);
+            }
+            return message.ack();
+        });
     }
 
     @Outgoing("incident-update-event")
@@ -54,8 +61,7 @@ public class IncidentUpdateSubscriber {
 
     private Message<IncidentDTO> toMessage(IncidentDTO incident) {
         log.debug("IncidentUpdatedEvent: " + incident);
-        return KafkaRecord.of(incident.getIncidentId(), incident)
-                .addMetadata(OutgoingCloudEventMetadata.builder().withType("IncidentUpdatedEvent")
-                        .withTimestamp(OffsetDateTime.now().toZonedDateTime()).build());
+        return KafkaRecord.of(incident.getIncidentId(), incident).addMetadata(OutgoingCloudEventMetadata.builder()
+                .withType("IncidentUpdatedEvent").withTimestamp(OffsetDateTime.now().toZonedDateTime()).build());
     }
 }

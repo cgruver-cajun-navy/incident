@@ -1,0 +1,76 @@
+package org.labmonkeys.cajun_navy.incident.model;
+
+import java.time.Instant;
+import java.util.List;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Version;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.labmonkeys.cajun_navy.incident.dto.IncidentDTO.IncidentStatus;
+
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Entity
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Table(name = "reported_incident")
+public class Incident extends PanacheEntityBase {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
+    private long id;
+
+    @Column(name = "incident_id", updatable = false, nullable = false, unique = true)
+    private String incidentId;
+
+    @Column(name = "latitude")
+    private String latitude;
+
+    @Column(name = "longitude")
+    private String longitude;
+
+    @Basic
+    @Column(name = "reported_time", updatable = false, nullable = false)
+    private Instant reportedTime;
+
+    @Column(name = "incident_status")
+    private IncidentStatus status;
+
+    @Column(name = "version")
+    @Version
+    private long version;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "incidentId", cascade = CascadeType.ALL)
+    private List<Victim> victims;
+
+    public static List<Incident> findByStatus(IncidentStatus status) {
+    
+        return find("status", status).list();
+    }
+
+    public static Incident findByIncidentId(String incidentId) {
+        return find("incidentId", incidentId).firstResult();
+    }
+
+    public static Incident updateLocation(String latitude, String longitude, String incidentId) {
+        update("latitude = ?1, longitude = ?2 where incidentId = ?3", latitude, longitude, incidentId);
+        return find("incidentId", incidentId).firstResult();
+    }
+
+    public static Incident updateStatus(IncidentStatus status, String incidentId) {
+        update("status = ?1 where incidentId = ?2", status, incidentId);
+        return find("incidentId", incidentId).firstResult();
+    }
+}

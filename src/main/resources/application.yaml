@@ -1,0 +1,89 @@
+quarkus:
+  application:
+    name: incident-service
+  log:
+    level: INFO
+    console:
+      enable: true
+      level: DEBUG
+    category: 
+      "com.redhat.cajun.navy":
+         level: DEBUG
+      "org.eclipse.yasson":
+        level: ERROR
+  datasource:
+    db-kind: postgresql
+    metrics:
+      enabled: true
+    jdbc:
+      url: ${RDBMS_URL}
+      min-size: 5
+      max-size: 20
+      initial-size: 5
+      validation-query-sql: SELECT 1
+      enable-metrics: true
+    username: ${DATASOURCE_USER}
+    password: ${DATASOURCE_PWD}
+  hibernate-orm:
+    database:
+      generation: none
+  kafka:
+    health:
+      enabled: true
+kafka:
+  bootstrap:
+    servers: ${KAFKA_BOOTSTRAP}
+mp:
+  messaging:
+    incoming:
+      update-incident-location:
+        connector: smallrye-kafka
+        key:
+          deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value:
+          deserializer: org.labmonkeys.cajun_navy.incident.event.IncidentDtoDeserializer
+        cloud-events: true
+        request:
+          timeout:
+            ms: 30000
+        enable: 
+          auto:
+            commit: false
+      update-incident-status:
+        connector: smallrye-kafka
+        key:
+          deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value:
+          deserializer: org.labmonkeys.cajun_navy.incident.event.IncidentDtoDeserializer
+        cloud-events: true
+        request:
+          timeout:
+            ms: 30000
+        enable: 
+          auto:
+            commit: false
+    outgoing:
+      incident-update-event:
+        connector: smallrye-kafka
+        key:
+          serializer: org.apache.kafka.common.serialization.StringSerializer
+        value:
+          serializer: io.quarkus.kafka.client.serialization.ObjectMapperSerializer
+        cloud-events: true
+        cloud-events-source: emergency-response/incident-service
+        cloud-events-insert-timestamp: true
+        cloud-events-data-content-type: application/json
+        cloud-events-mode: binary
+        acks: 1
+      incident-reported-event:
+        connector: smallrye-kafka
+        key:
+          serializer: org.apache.kafka.common.serialization.StringSerializer
+        value:
+          serializer: io.quarkus.kafka.client.serialization.ObjectMapperSerializer
+        cloud-events: true
+        cloud-events-source: emergency-response/incident-service
+        cloud-events-insert-timestamp: true
+        cloud-events-data-content-type: application/json
+        cloud-events-mode: binary
+        acks: 1

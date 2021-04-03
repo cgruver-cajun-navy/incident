@@ -1,0 +1,19 @@
+
+quarkus:
+  datasource:
+    db-kind: h2
+    jdbc:
+      url: jdbc:h2:mem:erdemo
+      driver: org.h2.Driver
+  hibernate-orm:
+    database:
+      generation: drop-and-create
+    log:
+      sql: true
+mp:
+  messaging:
+    outgoing:
+      incident-event:
+        connector: smallrye-in-memory
+      incident-event-1: 
+        connector: smallrye-in-memory

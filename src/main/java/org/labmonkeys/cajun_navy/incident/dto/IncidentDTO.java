@@ -1,5 +1,6 @@
 package org.labmonkeys.cajun_navy.incident.dto;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
@@ -11,8 +12,8 @@ public class IncidentDTO {
     public enum IncidentStatus {REPORTED, ASSIGNED, CANCELLED, CLOSED};
 
     private String incidentId;
-    private Double latitude;
-    private Double longitude;
+    private BigDecimal latitude;
+    private BigDecimal longitude;
     private int numberOfPeople;
     private Instant reportedTime;
     private IncidentStatus status;

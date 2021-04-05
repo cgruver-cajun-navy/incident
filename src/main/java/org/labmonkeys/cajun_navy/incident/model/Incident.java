@@ -64,9 +64,9 @@ public class Incident extends PanacheEntityBase {
         return find("incidentId", incidentId).firstResult();
     }
 
-    public static Incident updateLocation(String latitude, String longitude, String incidentId) {
-        update("latitude = ?1, longitude = ?2 where incidentId = ?3", latitude, longitude, incidentId);
-        return find("incidentId", incidentId).firstResult();
+    public static Incident updateLocation(Incident entity) {
+        update("latitude = ?1, longitude = ?2 where incidentId = ?3", entity.getLatitude(), entity.getLongitude(), entity.getIncidentId());
+        return find("incidentId", entity.getIncidentId()).firstResult();
     }
 
     public static Incident updateStatus(IncidentStatus status, String incidentId) {

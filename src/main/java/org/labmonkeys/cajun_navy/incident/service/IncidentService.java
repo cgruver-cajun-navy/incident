@@ -112,7 +112,7 @@ public class IncidentService {
     private IncidentDTO doUpdateIncidentLocation(IncidentDTO dto) {
 
         Incident entity = mapper.incidentDtoToEntity(dto);
-        return mapper.incidentEntityToDto(Incident.updateLocation(entity.getLatitude(), entity.getLongitude(), entity.getIncidentId()));
+        return mapper.incidentEntityToDto(Incident.updateLocation(entity));
     }
 
     public IncidentDTO addVictim(VictimDTO dto, String incidentId) {

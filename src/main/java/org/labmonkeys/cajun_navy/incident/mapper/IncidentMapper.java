@@ -17,9 +17,13 @@ import org.mapstruct.MappingTarget;
 public interface IncidentMapper {
     
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "latitude", ignore = true)
+    @Mapping(target = "longitude", ignore = true)
     Incident incidentDtoToEntity(IncidentDTO dto);
     @Mapping(target = "id", ignore = true)
     Victim victimDtoToEntity(VictimDTO dto);
+    @Mapping(target = "latitude", ignore = true)
+    @Mapping(target = "longitude", ignore = true)
     IncidentDTO incidentEntityToDto(Incident entity);
     VictimDTO victimEntityToDto(Victim entity);
 
@@ -30,8 +34,8 @@ public interface IncidentMapper {
 
     @AfterMapping
     default void incidentDtoToEntityCustom(IncidentDTO dto, @MappingTarget Incident entity) {
-        entity.setLatitude(BigDecimal.valueOf(dto.getLatitude()).setScale(5, RoundingMode.HALF_UP).toString());
-        entity.setLongitude(BigDecimal.valueOf(dto.getLongitude()).setScale(5, RoundingMode.HALF_UP).toString());
+        entity.setLatitude(dto.getLatitude().setScale(5, RoundingMode.HALF_UP).toString());
+        entity.setLongitude(dto.getLongitude().setScale(5, RoundingMode.HALF_UP).toString());
         for (Victim victim : entity.getVictims()) {
             victim.setIncident(entity);
         }
@@ -39,7 +43,7 @@ public interface IncidentMapper {
 
     @AfterMapping
     default void incidentEntityToDtoCustom(Incident entity, @MappingTarget IncidentDTO dto) {
-        dto.setLatitude(new BigDecimal(entity.getLatitude()).doubleValue());
-        dto.setLongitude(new BigDecimal(entity.getLongitude()).doubleValue());
+        dto.setLatitude(new BigDecimal(entity.getLatitude()));
+        dto.setLongitude(new BigDecimal(entity.getLongitude()));
     }
 }

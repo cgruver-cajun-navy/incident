@@ -22,7 +22,7 @@ public class EventBusSubscriber {
     IncidentService service;
 
     @Inject
-    EventPublisher publisher;    
+    IncidentEventPublisher publisher;    
 
     @ConsumeEvent("incidents")
     @Blocking

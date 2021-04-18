@@ -35,6 +35,9 @@ public class Incident extends PanacheEntityBase {
     @Column(name = "incident_id", updatable = false, nullable = false, unique = true)
     private String incidentId;
 
+    @Column(name = "disaster_id", updatable = false, nullable = false)
+    private String disasterId;
+
     @Column(name = "latitude")
     private String latitude;
 
@@ -47,6 +50,12 @@ public class Incident extends PanacheEntityBase {
 
     @Column(name = "incident_status")
     private IncidentStatus status;
+
+    @Column(name = "incident_priority")
+    private Integer priority;
+
+    @Column(name = "escalated")
+    private boolean escalated;
 
     @Column(name = "version")
     @Version
@@ -71,6 +80,11 @@ public class Incident extends PanacheEntityBase {
 
     public static Incident updateStatus(IncidentStatus status, String incidentId) {
         update("status = ?1 where incidentId = ?2", status, incidentId);
+        return find("incidentId", incidentId).firstResult();
+    }
+
+    public static Incident updatePriority(Integer priority, String incidentId) {
+        update("priority = ?1 where incidentId = ?2", priority, incidentId);
         return find("incidentId", incidentId).firstResult();
     }
 }

@@ -12,11 +12,14 @@ public class IncidentDTO {
     public enum IncidentStatus {REPORTED, ASSIGNED, CANCELLED, CLOSED};
 
     private String incidentId;
+    private String disasterId;
     private BigDecimal latitude;
     private BigDecimal longitude;
     private int numberOfPeople;
     private Instant reportedTime;
     private IncidentStatus status;
+    private Integer priority;
+    private boolean escalated;
     private List<VictimDTO> victims;
 
 }

@@ -10,4 +10,5 @@ public class VictimDTO {
     private String victimName;
     private String victimPhoneNumber;
     private VictimStatus status;
+    private String shelterName;
 }

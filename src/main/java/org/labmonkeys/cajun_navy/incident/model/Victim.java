@@ -44,6 +44,9 @@ public class Victim extends PanacheEntityBase {
     @Column(name = "victim_status")
     private VictimStatus status;
 
+    @Column(name = "shelter_name")
+    private String shelterName;
+
     @ManyToOne
     @JoinColumn(name = "incident_id", nullable = false)
     private Incident incident;

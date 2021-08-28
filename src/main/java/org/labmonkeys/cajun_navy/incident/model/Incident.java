@@ -54,6 +54,9 @@ public class Incident extends PanacheEntityBase {
     @Column(name = "incident_priority")
     private Integer priority;
 
+    @Column(name = "assignment_attempts")
+    private Integer assignmentAttempts;
+
     @Column(name = "escalated")
     private boolean escalated;
 

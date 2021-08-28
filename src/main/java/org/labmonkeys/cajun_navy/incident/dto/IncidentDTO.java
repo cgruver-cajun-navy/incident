@@ -19,6 +19,7 @@ public class IncidentDTO {
     private Instant reportedTime;
     private IncidentStatus status;
     private Integer priority;
+    private Integer assignmentAttempts;
     private boolean escalated;
     private List<VictimDTO> victims;
 
